@@ -1,0 +1,42 @@
+#!/bin/bash
+
+die()
+{
+    echo 'ERROR:' $@
+    exit 1
+}
+
+[ "$#" -eq 2 ] || die "please launch using $0 <avd_name> <num_of_instances>"
+echo $2 | grep -E -q '^[0-9]+$' || die "Numeric argument required, $2 provided"
+
+[ -z "$ANDROID_SDK" ] && die 'No $ANDROID_SDK specified'
+
+adt_platform_tools=$ANDROID_SDK/platform-tools/
+if [ -d "$adt_platform_tools" ]; then
+    export PATH=$adt_platform_tools:$PATH
+fi
+
+adt_tools=$ANDROID_SDK/tools/
+if [ -d "$adt_tools" ]; then
+    export PATH=$adt_tools:$PATH
+fi
+
+emulator_path=`which emulator`
+
+[ -z "emulator_path" ] && die "Could not locate AVD emulator"
+
+#Check the AVD list
+avd_list=`android list avd | grep Name | grep $1 | awk '{print $2}'`
+
+for avd in $avd_list; do
+    if [ $avd == $1 ]; then
+        avd_found='y'
+    fi
+done
+
+[ -z "$avd_found" ] && die "No AVD device found with '$1' name"
+
+for i in `seq 1 $2`; do
+    echo "Launching emulator with shared-net-id $i"
+    emulator @$1 -shared-net-id $i > /dev/null 2>&1 &
+done
