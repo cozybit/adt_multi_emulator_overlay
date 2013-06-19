@@ -1,6 +1,13 @@
-This repo contains the adt multi emulator overlay
+This repo contains the ADT multi emulator overlay
 
-To update your current adt package just overwrite with this 
-overlay your Android SDK root directory.
+In order to (un)install this overlay, use the overlay.sh script:
 
-$ cp -r tools/ $ANDROID_SDK
+Installing:
+
+ $ ./overlay -a install -p path_to_android_sdk
+
+Restoring:
+
+ $ ./overlay -a restore -p path_to_android_sdk
+
+If your $ANDROID_HOME env var is defined, the -p parameter is not necessary.
