@@ -17,8 +17,9 @@ function install () {
         _FILES=`find ${dir} -type f`
         for file in ${_FILES}; do
             if [ -f "${SDK_PATH}/${file}" ]; then
-                cp ${SDK_PATH}/${file} ${SDK_PATH}/${file}.orig
-                #cp ${file} ${SDK_PATH}/${file}
+                [ ! -f ${SDK_PATH}/${file}.orig ] && \
+                    cp ${SDK_PATH}/${file} ${SDK_PATH}/${file}.orig
+                cp ${file} ${SDK_PATH}/${file}
             fi
         done
     done
